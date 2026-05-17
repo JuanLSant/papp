@@ -1,4 +1,4 @@
-/* --- ESTILOS GENERALES Y BASE (Sincronizados con inicio.css) --- */
+/* --- ESTILOS GENERALES Y BASE --- */
 * {
     box-sizing: border-box;
 }
@@ -8,13 +8,18 @@ body {
     margin: 0 auto;
     max-width: 440px;
     width: 100%;
-    padding: 1rem;
+    padding: 0;
+    /* sin padding en body: lo maneja main */
     background-image: url('../assets/9ab2870916c33f4f8343b432862907f1.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     background-attachment: scroll;
     min-height: 100dvh;
+
+    /* Layout de columna para que el footer empuje al fondo */
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -33,42 +38,46 @@ header {
     z-index: 10;
     border-bottom: 1px solid #333;
     border-radius: 10px;
+    flex-shrink: 0;
 }
 
-/* --- VISTA DE CAPTURA Y CÁMARA (#Cam) --- */
+/* --- VISTA DE CAPTURA (main) --- */
 .content-capture {
+    flex: 1;
+    /* ocupa todo el espacio entre header y footer */
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: start;
     align-items: center;
-    align-content: stretch;
     gap: 20px;
-    padding: 20px 16px;
+    padding: 20px 16px 24px;
+    /* padding inferior para que no tape el footer */
 }
 
+/* --- CÁMARA --- */
 #Cam {
-    width: 330px;
+    width: 100%;
+    /* era 330px fijo */
+    max-width: 330px;
+    aspect-ratio: 1 / 1;
+    /* mantiene el cuadrado sin height fijo */
     background-color: #050505;
-    height: 330px;
     border-radius: 10px;
     overflow: hidden;
-    margin-bottom: 10px;
     z-index: 5;
     object-fit: cover;
     transform: scaleX(-1);
-    /* Efecto espejo para la cámara */
 }
 
-/* --- CONTENEDOR DE DATOS E INFO --- */
+/* --- CONTENEDOR DE DATOS --- */
 .data-card-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 12px;
-    margin-bottom: 40px;
-    width: 350px;
+    width: 100%;
+    /* era 350px fijo */
+    max-width: 350px;
     height: auto;
     min-height: 100px;
     background-color: #060706;
@@ -101,11 +110,13 @@ header {
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    align-content: center;
 }
 
 .Info-data h3 {
     color: #8d9197;
+    margin: 0;
+    font-size: 14px;
+    text-align: center;
 }
 
 /* --- BOTÓN GUARDAR CARTA --- */
@@ -173,7 +184,7 @@ header {
     transform: scale(0.96);
 }
 
-/* --- BOTÓN AR (REALIDAD AUMENTADA - Adaptado a proporciones de inicio.css) --- */
+/* --- BOTÓN AR --- */
 .boton-ar {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 13px;
@@ -184,7 +195,6 @@ header {
     align-items: center;
     justify-content: center;
     width: 54px;
-    /* Sincronizado a 54px como los otros botones */
     height: 54px;
     border: 1.5px solid rgba(255, 255, 255, 0.18);
     border-radius: 8px;
@@ -233,12 +243,10 @@ header {
     transform: scale(0.95);
 }
 
-/* --- MENÚ INFERIOR COMPACTO (Sincronizado con inicio.css) --- */
+/* --- FOOTER / MENÚ INFERIOR --- */
 .menu-compact {
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    /* sticky reemplazado por posición natural al fondo del flex column */
+    flex-shrink: 0;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -249,10 +257,16 @@ header {
     background: rgba(9, 49, 27, 0.55);
     backdrop-filter: blur(12px);
     border-top: 1px solid rgba(0, 255, 100, 0.15);
+    border-radius: 10px 10px 0 0;
+    position: sticky;
+    bottom: 0;
     z-index: 10;
+    /* Anclado al contenedor flex del body, no a la ventana */
 }
 
-.container-2-link {
+/* --- BOTONES DEL MENÚ --- */
+.container-2-link,
+.home-2-link {
     display: block;
     text-decoration: none;
     color: inherit;
@@ -262,10 +276,8 @@ header {
 .boton {
     margin-top: 0;
     width: 54px;
-    /* Sincronizado a 54px */
     height: 54px;
-    flex-shrink: 1;
-    min-width: 0;
+    flex-shrink: 0;
     border: 1.5px solid rgba(255, 255, 255, 0.18);
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.04);
