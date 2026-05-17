@@ -45,10 +45,10 @@ header {
 }
 
 .galery {
-  width: 226px;
+  width: 206px;
   flex-shrink: 0;
   height: 203px;
-  clip-path: path("M 0,0 L 226,0 L 226,120 L 150,203 L 0,203 Z");
+  clip-path: path("M 0,0 L 206,0 L 206,120 L 130,203 L 0,203 Z");
   background-color: #1e1e1e;
   border-radius: 10px;
   overflow: hidden;
@@ -180,7 +180,7 @@ header {
 }
 
 .day {
-  width: 50px;
+  width: 40px;
   flex-shrink: 0;
   height: 123px;
   background: rgba(9, 49, 27, 0.37);
