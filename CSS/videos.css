@@ -1,0 +1,214 @@
+/* ── ESTILOS GLOBALES Y BASE ── */
+body {
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+        sans-serif;
+    margin: auto;
+    max-width: 38rem;
+    padding: 2rem;
+
+    background-image: url('../assets/9ab2870916c33f4f8343b432862907f1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+header {
+    height: 50px;
+    background-color: #1e1e1e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #333;
+    border-radius: 10px;
+}
+
+/* ── CONTENIDO PRINCIPAL Y SCROLLBAR ── */
+.content-estadisticas {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+}
+
+.content-estadisticas::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content-estadisticas::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content-estadisticas::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 120, 0.45);
+    border-radius: 10px;
+}
+
+.content-estadisticas::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 140, 0.75);
+}
+
+/* ── ZONA DE CARGA DE ARCHIVOS (UPLOAD) ── */
+.upload-area {
+    margin-bottom: 14px;
+}
+
+.upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #2a2a2a;
+    border: 2px dashed #444;
+    color: #aaa;
+    padding: 12px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 90%;
+    justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.upload-btn:hover {
+    border-color: #888;
+    color: #eee;
+}
+
+/* ── REJILLA Y CONTENEDORES DE VIDEO ── */
+.container-5-estadisticas {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    align-content: start;
+    margin-top: 35px;
+    gap: 20px;
+}
+
+.Video-frame-H {
+    width: 400px;
+    height: 190px;
+    background: rgba(0, 0, 0, 0.829);
+    backdrop-filter: blur(12px);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+/* ── MENÚ DE NAVEGACIÓN COMPACTO (FOOTER) ── */
+.menu-compact {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 20px;
+    height: 90px;
+    background: rgba(9, 49, 27, 0.55);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(0, 255, 100, 0.15);
+    z-index: 10;
+}
+
+.container-2-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Redirección específica para el botón de home */
+.home-2-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Botones del menú inferior */
+.boton {
+    margin-bottom: 25px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: #e8e8e8;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(6px);
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s,
+        color 0.25s, box-shadow 0.25s;
+    overflow: hidden;
+}
+
+.boton::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: inherit;
+}
+
+/* Punto verde decorativo */
+.boton::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #4ade80;
+    opacity: 0.6;
+    transition: opacity 0.25s, box-shadow 0.25s;
+}
+
+.boton:hover {
+    border-color: rgba(34, 197, 94, 0.6);
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.06);
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.18),
+        inset 0 0 10px rgba(34, 197, 94, 0.06);
+}
+
+.boton:hover::before {
+    opacity: 1;
+}
+
+.boton:hover::after {
+    opacity: 1;
+    box-shadow: 0 0 6px #4ade80;
+}
+
+.boton:active {
+    transform: scale(0.95);
+}
+
+.boton img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
