@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/galeria.css">
+    <title>Galeria</title>
+</head>
+
+<body>
+    <header>💖 No hay partidos para hoy</header>
+    <script>
+        function irAFiltros(imagenSrc) {
+            const params = new URLSearchParams({ imagen: imagenSrc });
+            window.location.href = `filtros.html?${params}`;
+        }
+    </script>
+    <!-- Contenedor principal con scroll -->
+    <main class="content-estadisticas">
+        <div class="container-0-estadisticas">
+            <div class="elemento-0-estadisticas" onclick="irAFiltros('assets/photo2.jpg')"><img src="assets/photo2.jpg">
+            </div>
+            <div class="elemento-0-estadisticas" onclick="irAFiltros('assets/photo.jpg')"><img src="assets/photo.jpg">
+            </div>
+            <div class="elemento-0-estadisticas" onclick="irAFiltros('assets/photo3.jpg')"><img src="assets/photo3.jpg">
+            </div>
+            <div class="elemento-0-estadisticas" onclick="irAFiltros('assets/photo4.jpg')"><img src="assets/photo4.jpg">
+            </div>
+            <div class="elemento-0-estadisticas" onclick="irAFiltros('assets/photo5.jpg')"><img src="assets/photo5.jpg">
+            </div>
+            <div class="elemento-0-estadisticas" onclick="irAFiltros('assets/photo6.jpg')"><img src="assets/photo6.jpg">
+            </div>
+            <div class="elemento-0-estadisticas" onclick="irAFiltros('assets/photo7.jpg')"><img src="assets/photo7.jpg">
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="menu-compact">
+        <a href="index.html" class="home-2-link">
+            <div class="boton"><img src="assets/ini.jpg"></div>
+        </a>
+        <a href="tarjetas.html" class="container-2-link">
+            <div class="boton">
+                <img src="assets/filtro.jpg">
+            </div>
+        </a>
+        <a href="quiz.html" class="container-2-link">
+            <div class="boton">
+                <img src="assets/quiz.jpg">
+            </div>
+        </a>
+        <a href="archivos.html" class="container-2-link">
+            <div class="boton">
+                <img src="assets/archivo.jpg">
+            </div>
+        </a>
+    </footer>
+</body>
+
+</html>
