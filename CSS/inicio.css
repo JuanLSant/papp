@@ -180,7 +180,7 @@ header {
 }
 
 .day {
-  width: 36px;
+  width: 38px;
   flex-shrink: 0;
   height: 123px;
   background: rgba(9, 49, 27, 0.37);
