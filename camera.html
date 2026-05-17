@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/camera.css">
+    <title>Camera</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+</head>
+
+<body>
+    <header>💖 No hay partidos para hoy</header>
+
+    <main class="content-capture">
+        <canvas id="Cam"></canvas>
+
+        <div class="data-card-container">
+            <div class="data-card-top">
+                <label class="switch-container">
+                    <input type="checkbox" class="switch-input" id="modoSwitch" />
+
+                </label>
+
+                <div class="Info-data">
+                    <h3 id="mensaje">Cargando cámara...</h3>
+                </div>
+            </div>
+            <div class="boton-guardar-carta">Guardar</div>
+            </a>
+            <a href="Ar-1.html" class="boton-ar"> AR</a>
+        </div>
+    </main>
+
+    <footer class="menu-compact">
+        <a href="index.html" class="home-2-link">
+            <div class="boton"><img src="assets/ini.jpg"></div>
+        </a>
+        <a href="tarjetas.html" class="container-2-link">
+            <div class="boton">
+                <img src="assets/filtro.jpg">
+            </div>
+        </a>
+        <a href="quiz.html" class="container-2-link">
+            <div class="boton">
+                <img src="assets/quiz.jpg">
+            </div>
+        </a>
+        <a href="archivos.html" class="container-2-link">
+            <div class="boton">
+                <img src="assets/archivo.jpg">
+            </div>
+        </a>
+    </footer>
+    <script async src="capture.js"></script>
+</body>
+
+</html>

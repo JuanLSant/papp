@@ -1,0 +1,305 @@
+/* --- ESTILOS GENERALES Y BASE (Sincronizados con inicio.css) --- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0 auto;
+    max-width: 440px;
+    width: 100%;
+    padding: 1rem;
+    background-image: url('../assets/9ab2870916c33f4f8343b432862907f1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+    min-height: 100dvh;
+}
+
+header {
+    height: 50px;
+    background-color: #1e1e1e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #333;
+    border-radius: 10px;
+}
+
+/* --- VISTA DE CAPTURA Y CÁMARA (#Cam) --- */
+.content-capture {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+    align-content: stretch;
+    gap: 20px;
+    padding: 20px 16px;
+}
+
+#Cam {
+    width: 330px;
+    background-color: #050505;
+    height: 330px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    z-index: 5;
+    object-fit: cover;
+    transform: scaleX(-1);
+    /* Efecto espejo para la cámara */
+}
+
+/* --- CONTENEDOR DE DATOS E INFO --- */
+.data-card-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    width: 350px;
+    height: auto;
+    min-height: 100px;
+    background-color: #060706;
+    border-radius: 25px;
+    padding: 16px;
+}
+
+.data-card-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.switch-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.Info-data {
+    width: 190px;
+    height: 60px;
+    background-color: #252729;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.Info-data h3 {
+    color: #8d9197;
+}
+
+/* --- BOTÓN GUARDAR CARTA --- */
+.boton-guardar-carta {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    color: #b0b8b1;
+    cursor: pointer;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 18px;
+    height: 44px;
+    min-width: 80px;
+    background: linear-gradient(160deg, #141816 0%, #0d0f0d 100%);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    border-radius: 14px;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    position: relative;
+    overflow: hidden;
+    transition: color 0.25s, border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
+.boton-guardar-carta::before {
+    content: '';
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid currentColor;
+    border-radius: 3px;
+    flex-shrink: 0;
+    box-shadow: inset 0 -4px 0 0 currentColor;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.boton-guardar-carta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.10) 0%, transparent 55%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: inherit;
+}
+
+.boton-guardar-carta:hover {
+    color: #4ade80;
+    border-color: rgba(46, 204, 113, 0.55);
+    background: linear-gradient(160deg, #141e17 0%, #0d110e 100%);
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.6),
+        0 0 16px rgba(46, 204, 113, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.boton-guardar-carta:hover::after {
+    opacity: 1;
+}
+
+.boton-guardar-carta:active {
+    transform: scale(0.96);
+}
+
+/* --- BOTÓN AR (REALIDAD AUMENTADA - Adaptado a proporciones de inicio.css) --- */
+.boton-ar {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: #e8e8e8;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    /* Sincronizado a 54px como los otros botones */
+    height: 54px;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(78, 28, 28, 0.329);
+    backdrop-filter: blur(6px);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.25s;
+    overflow: hidden;
+}
+
+.boton-ar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: inherit;
+}
+
+.boton-ar::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #de4a4a;
+    opacity: 0.6;
+}
+
+.boton-ar:hover {
+    border-color: rgb(197, 34, 34);
+    color: #de4a4a;
+    background: rgba(75, 33, 40, 0.432);
+    box-shadow: 0 0 14px rgba(197, 34, 34, 0.18);
+}
+
+.boton-ar:hover::before {
+    opacity: 1;
+}
+
+.boton-ar:active {
+    transform: scale(0.95);
+}
+
+/* --- MENÚ INFERIOR COMPACTO (Sincronizado con inicio.css) --- */
+.menu-compact {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 20px;
+    height: 90px;
+    background: rgba(9, 49, 27, 0.55);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(0, 255, 100, 0.15);
+    z-index: 10;
+}
+
+.container-2-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.boton {
+    margin-top: 0;
+    width: 54px;
+    /* Sincronizado a 54px */
+    height: 54px;
+    flex-shrink: 1;
+    min-width: 0;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(6px);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.25s;
+}
+
+.boton img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.boton:hover {
+    border-color: rgba(34, 197, 94, 0.6);
+    background: rgba(34, 197, 94, 0.06);
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.18);
+}
+
+.boton:active {
+    transform: scale(0.95);
+}
+
+.boton::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #4ade80;
+    opacity: 0.6;
+}
