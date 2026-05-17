@@ -1,4 +1,3 @@
-/* --- ESTILOS GENERALES Y BASE --- */
 * {
     box-sizing: border-box;
 }
@@ -8,21 +7,17 @@ body {
     margin: 0 auto;
     max-width: 440px;
     width: 100%;
-    padding: 0;
-    /* sin padding en body: lo maneja main */
+    padding: 1rem;
     background-image: url('../assets/9ab2870916c33f4f8343b432862907f1.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     background-attachment: scroll;
     min-height: 100dvh;
-
-    /* Layout de columna para que el footer empuje al fondo */
-    display: flex;
-    flex-direction: column;
 }
 
 header {
+
     height: 50px;
     background-color: #1e1e1e;
     color: white;
@@ -33,33 +28,24 @@ header {
     font-weight: 500;
     padding: 0 20px;
     text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 10;
     border-bottom: 1px solid #333;
     border-radius: 10px;
-    flex-shrink: 0;
+
 }
 
-/* --- VISTA DE CAPTURA (main) --- */
 .content-capture {
-    flex: 1;
-    /* ocupa todo el espacio entre header y footer */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    padding: 20px 16px 24px;
-    /* padding inferior para que no tape el footer */
+    padding: 20px 0 0;
 }
 
-/* --- CÁMARA --- */
+
 #Cam {
     width: 100%;
-    /* era 330px fijo */
     max-width: 330px;
     aspect-ratio: 1 / 1;
-    /* mantiene el cuadrado sin height fijo */
     background-color: #050505;
     border-radius: 10px;
     overflow: hidden;
@@ -68,7 +54,7 @@ header {
     transform: scaleX(-1);
 }
 
-/* --- CONTENEDOR DE DATOS --- */
+
 .data-card-container {
     display: flex;
     flex-direction: column;
@@ -76,7 +62,6 @@ header {
     align-items: center;
     gap: 12px;
     width: 100%;
-    /* era 350px fijo */
     max-width: 350px;
     height: auto;
     min-height: 100px;
@@ -119,7 +104,7 @@ header {
     text-align: center;
 }
 
-/* --- BOTÓN GUARDAR CARTA --- */
+
 .boton-guardar-carta {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 14px;
@@ -184,7 +169,6 @@ header {
     transform: scale(0.96);
 }
 
-/* --- BOTÓN AR --- */
 .boton-ar {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 13px;
@@ -243,10 +227,7 @@ header {
     transform: scale(0.95);
 }
 
-/* --- FOOTER / MENÚ INFERIOR --- */
 .menu-compact {
-    /* sticky reemplazado por posición natural al fondo del flex column */
-    flex-shrink: 0;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -256,15 +237,13 @@ header {
     height: 90px;
     background: rgba(9, 49, 27, 0.55);
     backdrop-filter: blur(12px);
-    border-top: 1px solid rgba(0, 255, 100, 0.15);
-    border-radius: 10px 10px 0 0;
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
-    /* Anclado al contenedor flex del body, no a la ventana */
+    border: 1px solid rgba(0, 255, 100, 0.15);
+    border-radius: 10px;
+    margin-top: 45px;
+    margin-bottom: 1rem;
 }
 
-/* --- BOTONES DEL MENÚ --- */
+
 .container-2-link,
 .home-2-link {
     display: block;
