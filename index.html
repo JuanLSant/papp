@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/CSS/inicio.css">
+  <title>index</title>
+</head>
+
+<body>
+  <header>💖 No hay partidos para hoy</header>
+  <div class="container-1">
+    <a href="galeria.html" class="container-2-link">
+      <div class="galery">
+        <img src="assets/photo2.jpg">
+      </div>
+    </a>
+    <div class="score">
+      <div class="imagen-s">
+        <img src="assets/8ec91d1838f00522eba9a21bc00de726.jpg">
+      </div>
+      <div class="info-s">
+        <h3>Mi score</h3>
+        <h5 id="score-display">0 pts.</h5>
+      </div>
+    </div>
+  </div>
+  <a href="estadisticas.html" class="container-2-link">
+    <div class="container-2">
+      <div class="estadio">
+        <div class="nombre-estadio">
+          <h1>Estadio BBVA</h1>
+        </div>
+        <div class="estadio-ico">
+          <img src="assets/e.jpg">
+        </div>
+      </div>
+    </div>
+  </a>
+  <div class="container-3">
+    <div class="day">
+      <div class="ima">
+        <img src="assets/be4d26541582cff6bdf313d841ef19cc.jpg">
+      </div>
+      <div class="text-day">
+        <h4>Mon</h4>
+        <h4>16</h4>
+      </div>
+    </div>
+    <div class="day">
+      <div class="ima">
+        <img src="assets/be08b6a20c73fdc607d96ae056275d38.jpg">
+      </div>
+      <div class="text-day">
+        <h4>Tue</h4>
+        <h4>17</h4>
+      </div>
+    </div>
+    <div class="day">
+      <div class="ima">
+        <img src="assets/be4d26541582cff6bdf313d841ef19cc.jpg">
+      </div>
+      <div class="text-day">
+        <h4>Wed</h4>
+        <h4>18</h4>
+      </div>
+    </div>
+    <div class="day">
+      <div class="ima">
+        <img src="assets/be08b6a20c73fdc607d96ae056275d38.jpg">
+      </div>
+      <div class="text-day">
+        <h4>Thu</h4>
+        <h4>19</h4>
+      </div>
+    </div>
+    <div class="day">
+      <div class="ima">
+        <img src="assets/be08b6a20c73fdc607d96ae056275d38.jpg">
+      </div>
+      <div class="text-day">
+        <h4>Fri</h4>
+        <h4>20</h4>
+      </div>
+    </div>
+    <div class="day">
+      <div class="ima">
+        <img src="assets/be4d26541582cff6bdf313d841ef19cc.jpg">
+      </div>
+      <div class="text-day">
+        <h4>Sat</h4>
+        <h4>21</h4>
+      </div>
+    </div>
+    <div class="day">
+      <div class="ima">
+        <img src="assets/be08b6a20c73fdc607d96ae056275d38.jpg">
+      </div>
+      <div class="text-day">
+        <h4>Sun</h4>
+        <h4>22</h4>
+      </div>
+    </div>
+  </div>
+  <div class="container-4">
+    <a href="camera.html" class="container-2-link">
+      <div class="boton">
+        <img src="assets/camera.jpg">
+      </div>
+    </a>
+    <a href="videos.html" class="container-2-link">
+      <div class="boton">
+        <img src="assets/Videos.jpg">
+      </div>
+    </a>
+    <a href="tarjetas.html" class="container-2-link">
+      <div class="boton">
+        <img src="assets/filtro.jpg">
+      </div>
+    </a>
+    <a href="quiz.html" class="container-2-link">
+      <div class="boton">
+        <img src="assets/quiz.jpg">
+      </div>
+    </a>
+    <a href="archivos.html" class="container-2-link">
+      <div class="boton">
+        <img src="assets/archivo.jpg">
+      </div>
+    </a>
+  </div>
+
+  <script>
+    const saved = localStorage.getItem('totalScore');
+    document.getElementById('score-display').textContent =
+      (saved ? parseInt(saved) : 0) + ' pts.';
+  </script>
+
+  <script type="module" src="/src/renderer.ts"></script>
+</body>
+
+</html>
