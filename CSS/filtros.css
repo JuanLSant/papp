@@ -282,7 +282,6 @@ header {
     position: relative;
     width: 100%;
     height: 820px;
-    /* altura fija, ajusta el número a tu gusto */
     overflow: hidden;
     border-radius: 10px;
     background: #111;
@@ -292,7 +291,6 @@ header {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* muestra la imagen completa, sin recortar */
     display: block;
 }
 
@@ -312,7 +310,6 @@ header {
     position: relative;
     width: 100%;
     height: 400px;
-    /* ← solo esta definición */
     overflow: hidden;
     border-radius: 10px;
     background: #111;

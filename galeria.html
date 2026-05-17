@@ -67,19 +67,23 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            const objectURL = URL.createObjectURL(file);
-            const contenedor = document.querySelector('.container-0-estadisticas');
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const base64 = event.target.result;
 
-            const div = document.createElement('div');
-            div.className = 'elemento-0-estadisticas';
-            div.onclick = () => irAFiltros(objectURL);
+                const contenedor = document.querySelector('.container-0-estadisticas');
+                const div = document.createElement('div');
+                div.className = 'elemento-0-estadisticas';
+                div.onclick = () => irAFiltros(base64);
 
-            const img = document.createElement('img');
-            img.src = objectURL;
-            img.alt = file.name;
+                const img = document.createElement('img');
+                img.src = base64;
+                img.alt = file.name;
 
-            div.appendChild(img);
-            contenedor.prepend(div);
+                div.appendChild(img);
+                contenedor.prepend(div);
+            };
+            reader.readAsDataURL(file);
 
             this.value = '';
         });
