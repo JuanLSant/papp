@@ -59,8 +59,8 @@
 
     <script>
         function irAFiltros(imagenSrc) {
-            const params = new URLSearchParams({ imagen: imagenSrc });
-            window.location.href = `filtros.html?${params}`;
+            sessionStorage.setItem('imagenFiltro', imagenSrc);
+            window.location.href = 'filtros.html';
         }
 
         document.getElementById('input-foto').addEventListener('change', function (e) {
@@ -78,13 +78,10 @@
 
                 const img = document.createElement('img');
                 img.src = base64;
-                img.alt = file.name;
-
                 div.appendChild(img);
                 contenedor.prepend(div);
             };
             reader.readAsDataURL(file);
-
             this.value = '';
         });
     </script>

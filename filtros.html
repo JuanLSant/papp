@@ -48,8 +48,8 @@
     </footer>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const imagenSrc = params.get('imagen');
+        const imagenSrc = sessionStorage.getItem('imagenFiltro')
+            || new URLSearchParams(window.location.search).get('imagen');
         const img = document.getElementById('imagen-seleccionada');
         const overlay = document.getElementById('canvas-overlay');
         const ctx = overlay.getContext('2d');
