@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ar test</title>
+
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js"></script>
+
+    <script>
+        AFRAME.registerComponent('confetti-generator', {
+            schema: { interval: { type: 'number', default: 5000 } },
+            init: function () {
+                this.generateConfetti = this.generateConfetti.bind(this);
+                this.clearConfetti = this.clearConfetti.bind(this);
+                this.generateConfetti();
+                this.intervalId = setInterval(() => {
+                    this.clearConfetti();
+                    this.generateConfetti();
+                }, this.data.interval);
+            },
+            remove: function () { clearInterval(this.intervalId); },
+            clearConfetti: function () { while (this.el.firstChild) { this.el.removeChild(this.el.firstChild); } },
+            generateConfetti: function () {
+                const colors = ['#FF0000', '#FFFF00', '#00FF00', '#00FFFF', '#FF00FF', '#FFD700', '#FF69B4', '#FFA500'];
+                const numConfetti = 120;
+                const container = this.el;
+                for (let i = 0; i < numConfetti; i++) {
+                    const confetti = document.createElement('a-plane');
+                    confetti.setAttribute('width', 0.06 + Math.random() * 0.14);
+                    confetti.setAttribute('height', 0.06 + Math.random() * 0.14);
+                    confetti.setAttribute('color', colors[Math.floor(Math.random() * colors.length)]);
+                    const startX = (Math.random() - 0.5) * 1.5;
+                    const startZ = (Math.random() - 0.5) * 1.5;
+                    confetti.setAttribute('position', { x: startX, y: 0.3 + Math.random() * 0.8, z: startZ });
+                    confetti.setAttribute('rotation', { x: Math.random() * 360, y: Math.random() * 360, z: Math.random() * 360 });
+                    confetti.setAttribute('animation__rise', { property: 'position', dur: 600 + Math.random() * 800, easing: 'easeOutQuad', to: { x: startX + (Math.random() - 0.5) * 5, y: 3 + Math.random() * 2, z: startZ + (Math.random() - 0.5) * 5 } });
+                    confetti.setAttribute('animation__fall', { property: 'position', dur: 2500 + Math.random() * 1500, delay: 800 + Math.random() * 600, easing: 'easeInQuad', to: { x: startX + (Math.random() - 0.5) * 8, y: -3, z: startZ + (Math.random() - 0.5) * 8 } });
+                    confetti.setAttribute('animation__spin', { property: 'rotation', to: '0 0 7200', dur: 3000 + Math.random() * 4000, easing: 'linear', loop: true });
+                    confetti.setAttribute('animation__fade', { property: 'material.opacity', from: 1, to: 0, dur: 3500, delay: 1500 + Math.random() * 2000, easing: 'easeInQuad' });
+                    container.appendChild(confetti);
+                }
+            }
+        });
+    </script>
+
+    <style>
+        /* ── Botón regresar ── */
+        #btn-regresar {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.65);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        #btn-regresar:active {
+            transform: scale(0.95);
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* ── Contenedor de botones inferiores ── */
+        #bottom-controls {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* ── Estilo base de botones inferiores ── */
+        .btn-ar {
+            background: rgba(0, 0, 0, 0.65);
+            color: white;
+            padding: 13px 28px;
+            border-radius: 50px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-ar:active {
+            transform: scale(0.95);
+        }
+
+        /* ── Estado activo del botón Animar ── */
+        #btn-animar.activo {
+            background: rgba(0, 180, 80, 0.75);
+            border-color: rgba(0, 255, 100, 0.4);
+            box-shadow: 0 4px 18px rgba(0, 200, 80, 0.45);
+        }
+
+        /* ── Estado activo del botón Info ── */
+        #btn-info.activo {
+            background: rgba(20, 100, 220, 0.75);
+            border-color: rgba(80, 160, 255, 0.4);
+            box-shadow: 0 4px 18px rgba(40, 120, 255, 0.45);
+        }
+    </style>
+</head>
+
+<body style="margin:0; overflow:hidden; background:#000;">
+
+    <a-assets>
+        <!-- Copa compartida -->
+        <a-asset-item id="copa-obj" src="model/copa.obj"></a-asset-item>
+        <a-asset-item id="copa-mtl" src="model/copa.mtl"></a-asset-item>
+
+        <!-- 1. México -->
+        <a-asset-item id="mexico-obj" src="model/MEXICO.obj"></a-asset-item>
+        <a-asset-item id="mexico-mtl" src="model/MEXICO.mtl"></a-asset-item>
+        <a-asset-item id="mexico-m-glb" src="Monito/Monito Mexico.glb"></a-asset-item>
+
+        <!-- 2. Corea -->
+        <a-asset-item id="corea-obj" src="model/COREA.obj"></a-asset-item>
+        <a-asset-item id="corea-mtl" src="model/COREA.mtl"></a-asset-item>
+        <a-asset-item id="corea-m-glb" src="Monito/Monito Corea.glb"></a-asset-item>
+
+        <!-- 3. Alemania -->
+        <a-asset-item id="alemania-obj" src="model/ALEMANIA.obj"></a-asset-item>
+        <a-asset-item id="alemania-mtl" src="model/ALEMANIA.mtl"></a-asset-item>
+        <a-asset-item id="alemania-m-glb" src="Monito/Monito Alemania.glb"></a-asset-item>
+
+        <!-- 4. Argentina -->
+        <a-asset-item id="argentina-obj" src="model/ARGENTINA.obj"></a-asset-item>
+        <a-asset-item id="argentina-mtl" src="model/ARGENTINA.mtl"></a-asset-item>
+        <a-asset-item id="argentina-m-glb" src="Monito/Monito Argentina.glb"></a-asset-item>
+
+        <!-- 5. Brazil -->
+        <a-asset-item id="brazil-obj" src="model/BRAZIL.obj"></a-asset-item>
+        <a-asset-item id="brazil-mtl" src="model/BRAZIL.mtl"></a-asset-item>
+        <a-asset-item id="brazil-m-glb" src="Monito/Monito Brazil.glb"></a-asset-item>
+
+        <!-- 6. Canada -->
+        <a-asset-item id="canada-obj" src="model/CANADA.obj"></a-asset-item>
+        <a-asset-item id="canada-mtl" src="model/CANADA.mtl"></a-asset-item>
+        <a-asset-item id="canada-m-glb" src="Monito/Monito Canada.glb"></a-asset-item>
+
+        <!-- 7. Francia -->
+        <a-asset-item id="francia-obj" src="model/FRANCIA.obj"></a-asset-item>
+        <a-asset-item id="francia-mtl" src="model/FRANCIA.mtl"></a-asset-item>
+        <a-asset-item id="francia-m-glb" src="Monito/Monito Francia.glb"></a-asset-item>
+
+        <!-- 8. Japón -->
+        <a-asset-item id="japon-obj" src="model/JAPON.obj"></a-asset-item>
+        <a-asset-item id="japon-mtl" src="model/JAPON.mtl"></a-asset-item>
+        <a-asset-item id="japon-m-glb" src="Monito/Monito Japon.glb"></a-asset-item>
+
+        <!-- 9. Portugal -->
+        <a-asset-item id="portugal-obj" src="model/PORTUGAL.obj"></a-asset-item>
+        <a-asset-item id="portugal-mtl" src="model/PORTUGAL.mtl"></a-asset-item>
+        <a-asset-item id="portugal-m-glb" src="Monito/Monito Portugal.glb"></a-asset-item>
+
+        <!-- 10. USA -->
+        <a-asset-item id="usa-obj" src="model/USA.obj"></a-asset-item>
+        <a-asset-item id="usa-mtl" src="model/USA.mtl"></a-asset-item>
+        <a-asset-item id="usa-m-glb" src="Monito/Monito Usa.glb"></a-asset-item>
+    </a-assets>
+
+    <a-scene vr-mode-ui="enabled: false" embedded style="background: transparent;"
+        renderer="antialias: false; alpha: true; logarithmicDepthBuffer: true; maxCanvasWidth: 1280; maxCanvasHeight: 720;"
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; trackingMethod: best; maxDetectionRate: 30;">
+
+        <!-- ════════════════════════════════════════
+         MARKER 1 — (México)
+    ════════════════════════════════════════ -->
+        <a-marker type="pattern" url="plugins/pattern-Mexico.patt" id="marker-mexico">
+
+            <!-- Copa giratoria (siempre visible) -->
+            <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+            </a-entity>
+
+            <!-- Texto país (Info) -->
+            <a-entity id="mexico-entity" obj-model="obj: #mexico-obj; mtl: #mexico-mtl" scale="0.5 0.5 0.5"
+                position="1 2.5 0" rotation="90 0 0" visible="false">
+            </a-entity>
+
+            <!-- Monito México -->
+            <a-entity id="monito-mexico" gltf-model="#mexico-m-glb" scale="0.1 0.1 0.1" position="0 0 0"
+                rotation="0 0 0">
+            </a-entity>
+
+            <!-- Confeti -->
+            <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+
+            <!-- Imagen (Info) -->
+            <a-image id="img-mexico" src="./Mexico.jpg" width="1" height="1" position="-1 1.5 0"
+                material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false">
+            </a-image>
+
+        </a-marker>
+
+        <!-- ════════════════════════════════════════
+         MARKER 2 — (Corea)
+    ════════════════════════════════════════ -->
+        <a-marker type="pattern" url="plugins/pattern-Corea.patt" id="marker-corea">
+
+            <!-- Copa giratoria (siempre visible) -->
+            <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+            </a-entity>
+
+            <!-- Texto país (Info) -->
+            <a-entity id="corea-entity" obj-model="obj: #corea-obj; mtl: #corea-mtl" scale="0.5 0.5 0.5"
+                position="1 2.5 0" rotation="90 0 0" visible="false">
+            </a-entity>
+
+            <!-- Monito Corea -->
+            <a-entity id="monito-corea" gltf-model="#corea-m-glb" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0">
+            </a-entity>
+
+            <!-- Confeti -->
+            <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+
+            <!-- Imagen (Info) -->
+            <a-image id="img-corea" src="./corea.jpg" width="1" height="1" position="-1 1.5 0"
+                material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false">
+            </a-image>
+
+        </a-marker>
+
+        <!-- ════════════════════════════════════════
+        MARKER 3 — (Alemania)
+    ════════════════════════════════════════ -->
+        <a-marker type="pattern" url="plugins/pattern-Alemania.patt" id="marker-alemania">
+
+            <!-- Copa giratoria (siempre visible) -->
+            <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+            </a-entity>
+
+            <!-- Texto país (Info) -->
+            <a-entity id="alemania-entity" obj-model="obj: #alemania-obj; mtl: #alemania-mtl" scale="0.5 0.5 0.5"
+                position="1 2.5 0" rotation="90 0 0" visible="false">
+            </a-entity>
+
+            <!-- Monito Alemania -->
+            <a-entity id="monito-alemania" gltf-model="#alemania-m-glb" scale="0.1 0.1 0.1" position="0 0 0"
+                rotation="0 0 0">
+            </a-entity>
+
+            <!-- Confeti -->
+            <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+
+            <!-- Imagen (Info) -->
+            <a-image id="img-alemania" src="./alemania.jpg" width="1" height="1" position="-1 1.5 0"
+                material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false">
+            </a-image>
+
+        </a-marker>
+        <!-- ════════════════════════════════════════
+        MARKER 4 — (Argentina)
+    ════════════════════════════════════════ -->
+        <a-marker type="pattern" url="plugins/pattern-Argentina.patt" id="marker-argentina">
+            <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"></a-entity>
+            <a-entity id="argentina-entity" obj-model="obj: #argentina-obj; mtl: #argentina-mtl" scale="0.5 0.5 0.5"
+                position="1 2.5 0" rotation="90 0 0" visible="false"></a-entity>
+            <a-entity id="monito-argentina" gltf-model="#argentina-m-glb" scale="0.1 0.1 0.1" position="0 0 0"
+                rotation="0 0 0"></a-entity>
+            <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+            <a-image id="img-argentina" src="./argentina.jpg" width="1" height="1" position="-1 1.5 0"
+                material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous"
+                visible="false"></a-image>
+        </a-marker>
+
+        <!-- ════════════════════════════════════════
+        MARKER 5 — (Brazil)
+    ════════════════════════════════════════ -->
+        <!-- <a-marker type="pattern" url=plugins/pattern-Brazil.patt" id="marker-brazil">
+      <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"></a-entity>
+      <a-entity id="brazil-entity" obj-model="obj: #brazil-obj; mtl: #brazil-mtl"
+        scale="0.5 0.5 0.5" position="1 2.5 0" rotation="90 0 0" visible="false"></a-entity>
+      <a-entity id="monito-brazil" gltf-model="#brazil-m-glb" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0"></a-entity>
+      <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+      <a-image id="img-brazil" src="./brazil.jpg" width="1" height="1" position="-1 1.5 0"
+        material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false"></a-image>
+    </a-marker> -->
+
+        <!-- ════════════════════════════════════════
+        MARKER 6 — (Canada)
+    ════════════════════════════════════════ -->
+        <!-- <a-marker type="pattern" url="plugins/pattern-Canada.patt" id="marker-canada">
+      <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"></a-entity>
+      <a-entity id="canada-entity" obj-model="obj: #canada-obj; mtl: #canada-mtl"
+        scale="0.5 0.5 0.5" position="1 2.5 0" rotation="90 0 0" visible="false"></a-entity>
+      <a-entity id="monito-canada" gltf-model="#canada-m-glb" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0"></a-entity>
+      <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+      <a-image id="img-canada" src="./canada.jpg" width="1" height="1" position="-1 1.5 0"
+        material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false"></a-image>
+    </a-marker> -->
+
+        <!-- ════════════════════════════════════════
+        MARKER 7 — (Francia)
+    ════════════════════════════════════════ -->
+        <!-- <a-marker type="pattern" url="plugins/pattern-Francia.patt" id="marker-francia">
+      <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"></a-entity>
+      <a-entity id="francia-entity" obj-model="obj: #francia-obj; mtl: #francia-mtl"
+        scale="0.5 0.5 0.5" position="1 2.5 0" rotation="90 0 0" visible="false"></a-entity>
+      <a-entity id="monito-francia" gltf-model="#francia-m-glb" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0"></a-entity>
+      <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+      <a-image id="img-francia" src="./francia.jpg" width="1" height="1" position="-1 1.5 0"
+        material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false"></a-image>
+    </a-marker> -->
+
+        <!-- ════════════════════════════════════════
+        MARKER 8 — (Japón)
+    ════════════════════════════════════════ -->
+        <!-- <a-marker type="pattern" url="plugins/pattern-Japon.patt" id="marker-japon">
+      <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"></a-entity>
+      <a-entity id="japon-entity" obj-model="obj: #japon-obj; mtl: #japon-mtl"
+        scale="0.5 0.5 0.5" position="1 2.5 0" rotation="90 0 0" visible="false"></a-entity>
+      <a-entity id="monito-japon" gltf-model="#japon-m-glb" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0"></a-entity>
+      <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+      <a-image id="img-japon" src="./japon.jpg" width="1" height="1" position="-1 1.5 0"
+        material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false"></a-image>
+    </a-marker> -->
+
+        <!-- ════════════════════════════════════════
+        MARKER 9 — (Portugal)
+    ════════════════════════════════════════ -->
+        <!-- <a-marker type="pattern" url="plugins/pattern-Portugal.patt" id="marker-portugal">
+      <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"></a-entity>
+      <a-entity id="portugal-entity" obj-model="obj: #portugal-obj; mtl: #portugal-mtl"
+        scale="0.5 0.5 0.5" position="1 2.5 0" rotation="90 0 0" visible="false"></a-entity>
+      <a-entity id="monito-portugal" gltf-model="#portugal-m-glb" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0"></a-entity>
+      <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+      <a-image id="img-portugal" src="./portugal.jpg" width="1" height="1" position="-1 1.5 0"
+        material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false"></a-image>
+    </a-marker> -->
+
+        <!-- ════════════════════════════════════════
+        MARKER 10 — (USA)
+    ════════════════════════════════════════ -->
+        <!-- <a-marker type="pattern" url="plugins/pattern-Usa.patt" id="marker-usa">
+      <a-entity obj-model="obj: #copa-obj; mtl: #copa-mtl" scale="1 1 1" position="0 1 0" rotation="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"></a-entity>
+      <a-entity id="usa-entity" obj-model="obj: #usa-obj; mtl: #usa-mtl"
+        scale="0.5 0.5 0.5" position="1 2.5 0" rotation="90 0 0" visible="false"></a-entity>
+      <a-entity id="monito-usa" gltf-model="#usa-m-glb" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0"></a-entity>
+      <a-entity confetti-generator="interval: 5000" position="0 0.5 0"></a-entity>
+      <a-image id="img-usa" src="./usa.jpg" width="1" height="1" position="-1 1.5 0"
+        material="shader: flat; transparent: true; opacity: 1;" crossorigin="anonymous" visible="false"></a-image>
+    </a-marker> -->
+        <a-entity camera></a-entity>
+
+    </a-scene>
+
+    <!-- Botón regresar -->
+    <div id="btn-regresar">← Regresar</div>
+
+    <!-- Botones inferiores centrados -->
+    <div id="bottom-controls">
+        <div id="btn-info" class="btn-ar">ℹ️ Info</div>
+        <div id="btn-animar" class="btn-ar">▶ Animar</div>
+    </div>
+
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // ── Estado global ───────────────────────────────────────────────────────
+        let infoVisible = false;
+        let animando = false;
+
+        // ── Config por marker ───────────────────────────────────────────────────
+        // Cada entrada agrupa los elementos que cambian según el marker activo.
+        const markerConfig = {
+            'marker-mexico': {
+                infoEntity: document.getElementById('mexico-entity'),
+                imagen: document.getElementById('img-mexico'),
+                monito: document.getElementById('monito-mexico'),
+                clipName: 'ArmatureAction',
+            },
+            'marker-corea': {
+                infoEntity: document.getElementById('corea-entity'),
+                imagen: document.getElementById('img-corea'),
+                monito: document.getElementById('monito-corea'),
+                clipName: 'ArmatureAction',   // ← cambia si el clip tiene otro nombre en el GLB de Corea
+            },
+            'marker-alemania': {
+                infoEntity: document.getElementById('alemania-entity'),
+                imagen: document.getElementById('img-alemania'),
+                monito: document.getElementById('monito-alemania'),
+                clipName: 'ArmatureAction',
+            },
+            'marker-argentina': {
+                infoEntity: document.getElementById('argentina-entity'),
+                imagen: document.getElementById('img-argentina'),
+                monito: document.getElementById('monito-argentina'),
+                clipName: 'ArmatureAction',
+            },
+            // 'marker-brazil': {
+            //   infoEntity : document.getElementById('brazil-entity'),
+            //   imagen     : document.getElementById('img-brazil'),
+            //   monito     : document.getElementById('monito-brazil'),
+            //   clipName   : 'ArmatureAction',
+            // },
+            // 'marker-canada': {
+            //   infoEntity : document.getElementById('canada-entity'),
+            //   imagen     : document.getElementById('img-canada'),
+            //   monito     : document.getElementById('monito-canada'),
+            //   clipName   : 'ArmatureAction',
+            // },
+            // 'marker-francia': {
+            //   infoEntity : document.getElementById('francia-entity'),
+            //   imagen     : document.getElementById('img-francia'),
+            //   monito     : document.getElementById('monito-francia'),
+            //   clipName   : 'ArmatureAction',
+            // },
+            // 'marker-japon': {
+            //   infoEntity : document.getElementById('japon-entity'),
+            //   imagen     : document.getElementById('img-japon'),
+            //   monito     : document.getElementById('monito-japon'),
+            //   clipName   : 'ArmatureAction',
+            // },
+            // 'marker-portugal': {
+            //   infoEntity : document.getElementById('portugal-entity'),
+            //   imagen     : document.getElementById('img-portugal'),
+            //   monito     : document.getElementById('monito-portugal'),
+            //   clipName   : 'ArmatureAction',
+            // },
+            // 'marker-usa': {
+            //   infoEntity : document.getElementById('usa-entity'),
+            //   imagen     : document.getElementById('img-usa'),
+            //   monito     : document.getElementById('monito-usa'),
+            //   clipName   : 'ArmatureAction',
+            // },
+        };
+
+        // ── Marker activo (el último en detectarse) ─────────────────────────────
+        let activeMarkerId = null;
+
+        Object.keys(markerConfig).forEach(markerId => {
+            const markerEl = document.getElementById(markerId);
+            if (!markerEl) return;
+
+            markerEl.addEventListener('markerFound', () => {
+                activeMarkerId = markerId;
+                console.log('Marker encontrado:', markerId);
+
+                // Sincronizar estado de UI con el marker recién detectado
+                applyInfoState(infoVisible);
+                applyAnimarState(animando);
+            });
+
+            markerEl.addEventListener('markerLost', () => {
+                if (activeMarkerId === markerId) activeMarkerId = null;
+                console.log('Marker perdido:', markerId);
+            });
+
+            // Debug animaciones del GLB
+            const cfg = markerConfig[markerId];
+            if (cfg.monito) {
+                cfg.monito.addEventListener('model-loaded', () => {
+                    const mesh = cfg.monito.getObject3D('mesh');
+                    if (mesh && mesh.animations && mesh.animations.length > 0) {
+                        console.log(`✅ [${markerId}] Animaciones: ${mesh.animations.map(a => a.name).join(', ')}`);
+                    } else {
+                        console.warn(`❌ [${markerId}] El modelo no tiene animaciones`);
+                    }
+                });
+            }
+        });
+
+        // ── Helpers ─────────────────────────────────────────────────────────────
+        function getActiveConfig() {
+            return activeMarkerId ? markerConfig[activeMarkerId] : null;
+        }
+
+        function applyInfoState(visible) {
+            const cfg = getActiveConfig();
+            if (!cfg) return;
+            if (cfg.infoEntity) cfg.infoEntity.setAttribute('visible', visible);
+            if (cfg.imagen) cfg.imagen.setAttribute('visible', visible);
+        }
+
+        function applyAnimarState(anim) {
+            const cfg = getActiveConfig();
+            if (!cfg || !cfg.monito) return;
+
+            if (anim) {
+                cfg.monito.setAttribute('animation-mixer', `clip: ${cfg.clipName}; loop: repeat`);
+            } else {
+                cfg.monito.removeAttribute('animation-mixer');
+                const mesh = cfg.monito.getObject3D('mesh');
+                if (mesh && mesh.mixer) mesh.mixer.stopAllAction();
+            }
+        }
+
+        // ── Botón Info ───────────────────────────────────────────────────────────
+        document.getElementById('btn-info').addEventListener('click', function () {
+            infoVisible = !infoVisible;
+            applyInfoState(infoVisible);
+            this.classList.toggle('activo', infoVisible);
+            this.textContent = infoVisible ? '✖ Info' : 'ℹ️ Info';
+        });
+
+        // ── Botón Animar ─────────────────────────────────────────────────────────
+        document.getElementById('btn-animar').addEventListener('click', function () {
+            animando = !animando;
+            applyAnimarState(animando);
+            this.classList.toggle('activo', animando);
+            this.textContent = animando ? '⏹ Animar' : '▶ Animar';
+        });
+
+        // ── Botón Regresar ───────────────────────────────────────────────────────
+        document.getElementById('btn-regresar').addEventListener('click', function () {
+            window.location.href = 'index.html';
+        });
+
+    });
+</script>
+
+</html>
