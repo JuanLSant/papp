@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/filtros.css">
+    <title>Filtros</title>
+</head>
+
+<body>
+    <header>💖 No hay partidos para hoy</header>
+
+    <main class="content-estadisticas">
+        <div class="container-0-estadisticas">
+            <div class="container-filtro-preview">
+                <img id="imagen-seleccionada" src="" alt="Imagen seleccionada" crossorigin="anonymous">
+                <canvas id="canvas-overlay"></canvas>
+            </div>
+
+            <!-- Botones de filtro -->
+            <div class="filtros-container">
+                <button class="btn-filtro btn-ascii" onclick="aplicarFiltro('ascii',  this)"> ASCII</button>
+                <button class="btn-filtro btn-crt" onclick="aplicarFiltro('crt',    this)"> CRT</button>
+                <button class="btn-filtro btn-pixel" onclick="aplicarFiltro('pixel',  this)"> Pixel</button>
+            </div>
+
+            <!-- Botón guardar -->
+            <button class="btn-guardar" onclick="guardarImagen()">Guardar imagen</button>
+
+            <canvas id="canvas-exportar"></canvas>
+        </div>
+    </main>
+
+    <footer class="menu-compact">
+        <a href="index.html" class="home-2-link">
+            <div class="boton"><img src="assets/ini.jpg"></div>
+        </a>
+        <a href="tarjetas.html" class="container-2-link">
+            <div class="boton"><img src="assets/filtro.jpg"></div>
+        </a>
+        <a href="quiz.html" class="container-2-link">
+            <div class="boton"><img src="assets/quiz.jpg"></div>
+        </a>
+        <a href="archivos.html" class="container-2-link">
+            <div class="boton"><img src="assets/archivo.jpg"></div>
+        </a>
+    </footer>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const imagenSrc = params.get('imagen');
+        const img = document.getElementById('imagen-seleccionada');
+        const overlay = document.getElementById('canvas-overlay');
+        const ctx = overlay.getContext('2d');
+
+        let filtroActual = '';
+
+        if (imagenSrc) {
+            img.src = imagenSrc;
+            img.onload = () => redimensionarOverlay();
+        }
+
+        function redimensionarOverlay() {
+            const containerW = img.offsetWidth;
+            const containerH = img.offsetHeight;
+            const imgRatio = img.naturalWidth / img.naturalHeight;
+            const containerRatio = containerW / containerH;
+
+            let drawW, drawH, offsetX, offsetY;
+
+            if (imgRatio < containerRatio) {
+                // imagen más alta que el contenedor → barras a los lados
+                drawH = containerH;
+                drawW = drawH * imgRatio;
+            } else {
+                // imagen más ancha → barras arriba y abajo
+                drawW = containerW;
+                drawH = drawW / imgRatio;
+            }
+
+            offsetX = (containerW - drawW) / 2;
+            offsetY = (containerH - drawH) / 2;
+
+            overlay.style.left = offsetX + 'px';
+            overlay.style.top = offsetY + 'px';
+            overlay.width = Math.round(drawW);
+            overlay.height = Math.round(drawH);
+
+            if (filtroActual) dibujarFiltro(filtroActual);
+        }
+
+        window.addEventListener('resize', redimensionarOverlay);
+
+        // ─── Filtro ASCII ────────────────────────────────────────────────────────
+        function dibujarASCII() {
+            const chars = ['@', '#', 'M', 'B', '&', '%', 'W', 'X', 'H', 'A', 'O', 'T', 'S', 'I', '+', ';', ':', ',', '.', ' '];
+            const cw = overlay.width, ch = overlay.height;
+            const charSize = 3;
+
+            const cols = Math.floor(cw / charSize);
+            const rows = Math.floor(ch / charSize);
+
+            const tmp = document.createElement('canvas');
+            tmp.width = cols; tmp.height = rows;
+            const tctx = tmp.getContext('2d');
+            tctx.drawImage(img, 0, 0, cols, rows);
+            const data = tctx.getImageData(0, 0, cols, rows).data;
+
+            ctx.clearRect(0, 0, cw, ch);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, cw, ch);
+            ctx.font = `bold ${charSize + 1}px monospace`;
+            ctx.textBaseline = 'top';
+
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    const i = (y * cols + x) * 4;
+                    const bright = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) / 255;
+                    const charIdx = Math.floor((1 - bright) * (chars.length - 1));
+
+
+                    const gris = Math.floor(bright * 255);
+                    ctx.fillStyle = `rgb(${gris},${gris},${gris})`;
+                    ctx.fillText(chars[charIdx], x * charSize, y * charSize);
+                }
+            }
+        }
+
+        // ─── Filtro CRT ──────────────────────────────────────────────────────────
+        function dibujarCRT() {
+            const cw = overlay.width, ch = overlay.height;
+            ctx.clearRect(0, 0, cw, ch);
+
+            // Scanlines
+            for (let y = 0; y < ch; y += 3) {
+                ctx.fillStyle = 'rgba(0,0,0,0.35)';
+                ctx.fillRect(0, y, cw, 1);
+            }
+
+            // Separación RGB (aberración cromática)
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+
+            const tmp = document.createElement('canvas');
+            tmp.width = cw; tmp.height = ch;
+            const tctx = tmp.getContext('2d');
+            tctx.drawImage(img, 0, 0, cw, ch);
+
+            // Canal rojo desplazado
+            ctx.globalAlpha = 0.5;
+            ctx.fillStyle = 'red';
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.drawImage(tmp, -2, 0, cw, ch);
+
+            // Canal azul desplazado
+            ctx.fillStyle = 'blue';
+            ctx.drawImage(tmp, 2, 0, cw, ch);
+            ctx.restore();
+
+            // Viñeta
+            const grad = ctx.createRadialGradient(cw / 2, ch / 2, ch * 0.3, cw / 2, ch / 2, ch * 0.85);
+            grad.addColorStop(0, 'rgba(0,0,0,0)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.75)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, cw, ch);
+
+            // Tinte verde fosforescente suave
+            ctx.fillStyle = 'rgba(0, 255, 80, 0.07)';
+            ctx.fillRect(0, 0, cw, ch);
+        }
+
+        // ─── Filtro PIXEL ────────────────────────────────────────────────────────
+        function dibujarPixel() {
+            const cw = overlay.width, ch = overlay.height;
+            const blockSize = 6;
+            const cols = Math.floor(cw / blockSize);
+            const rows = Math.floor(ch / blockSize);
+
+            const tmp = document.createElement('canvas');
+            tmp.width = cols; tmp.height = rows;
+            const tctx = tmp.getContext('2d');
+            tctx.drawImage(img, 0, 0, cols, rows);
+            const data = tctx.getImageData(0, 0, cols, rows).data;
+
+            ctx.clearRect(0, 0, cw, ch);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, cw, ch);
+
+            const radio = (blockSize / 2) - 0.5;
+
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    const i = (y * cols + x) * 4;
+                    const r = Math.round(data[i] / 32) * 32;
+                    const g = Math.round(data[i + 1] / 32) * 32;
+                    const b = Math.round(data[i + 2] / 32) * 32;
+
+                    const cx = x * blockSize + blockSize / 2;
+                    const cy = y * blockSize + blockSize / 2;
+
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, radio, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgb(${r},${g},${b})`;
+                    ctx.fill();
+                }
+            }
+        }
+
+        // ─── Dispatcher ──────────────────────────────────────────────────────────
+        function dibujarFiltro(tipo) {
+            if (tipo === 'ascii') dibujarASCII();
+            if (tipo === 'crt') dibujarCRT();
+            if (tipo === 'pixel') dibujarPixel();
+        }
+
+        function aplicarFiltro(tipo, btn) {
+            if (btn.classList.contains('activo')) {
+                ctx.clearRect(0, 0, overlay.width, overlay.height);
+                filtroActual = '';
+                btn.classList.remove('activo');
+                return;
+            }
+
+            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
+            btn.classList.add('activo');
+
+            if (!img.src || img.naturalWidth === 0) {
+                alert('Carga primero una imagen.'); return;
+            }
+
+            redimensionarOverlay();
+            filtroActual = tipo;
+            dibujarFiltro(tipo);
+        }
+
+        // ─── Guardar ─────────────────────────────────────────────────────────────
+        function guardarImagen() {
+            if (!img.src || img.naturalWidth === 0) {
+                alert('No hay imagen cargada.'); return;
+            }
+
+            const exp = document.getElementById('canvas-exportar');
+            exp.width = img.naturalWidth;
+            exp.height = img.naturalHeight;
+            const ectx = exp.getContext('2d');
+
+
+            ectx.drawImage(img, 0, 0);
+
+
+            if (filtroActual) {
+                const scaleX = img.naturalWidth / overlay.width;
+                const scaleY = img.naturalHeight / overlay.height;
+                ectx.save();
+                ectx.scale(scaleX, scaleY);
+
+
+                const prevCtx = ctx;
+
+                ectx.restore();
+                ectx.drawImage(overlay, 0, 0, img.naturalWidth, img.naturalHeight);
+            }
+
+            const nombreArchivo = `filtro_${filtroActual || 'original'}_${Date.now()}.png`;
+
+            exp.toBlob((blob) => {
+                // Electron / Tauri
+                if (window.electronAPI?.guardarArchivo) {
+                    blob.arrayBuffer().then(buf => {
+                        window.electronAPI.guardarArchivo(`src/assets/filtros/${nombreArchivo}`, buf);
+                    });
+                    return;
+                }
+                // Fallback navegador
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = nombreArchivo;
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+    </script>
+</body>
+
+</html>
