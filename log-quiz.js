@@ -31,12 +31,10 @@ const questions = [
     }
 ];
 
-// Carga el score acumulado previo desde localStorage
-let score = parseInt(localStorage.getItem('totalScore') || '0');
-
+let bestScore = parseInt(localStorage.getItem('bestScore') || '0');
+let score = 0;
 let currentQuestionIndex = 0;
 
-// Elementos del DOM
 const progressFill = document.querySelector('.progress-fill');
 const questionElement = document.querySelector('.question h1');
 const answerContainers = document.querySelectorAll('.respuesta');
@@ -44,16 +42,20 @@ const answerElements = document.querySelectorAll('.respuesta h1');
 
 function loadQuestion() {
     if (currentQuestionIndex >= questions.length) {
-        alert(`¡Quiz terminado! Puntuación total acumulada: ${score} puntos.`);
+        if (score > bestScore) {
+            bestScore = score;
+            localStorage.setItem('bestScore', bestScore);
+            alert(`Nuevo record! Puntuacion: ${score} puntos.`);
+        } else {
+            alert(`Quiz terminado! Puntuacion: ${score} pts. Tu record es ${bestScore} pts.`);
+        }
         return;
     }
 
     questionElement.textContent = questions[currentQuestionIndex].question;
-
     answerElements.forEach((el, i) => {
         el.textContent = questions[currentQuestionIndex].options[i];
     });
-
     answerContainers.forEach(container => {
         container.style.background = 'rgba(3, 14, 7, 0.829)';
     });
@@ -70,7 +72,6 @@ answerContainers.forEach((container, index) => {
 
         if (index === correctIndex) {
             score += 100;
-            localStorage.setItem('totalScore', score); // guarda inmediatamente
             container.style.background = '#63f1769d';
         } else {
             container.style.background = '#ff4d4da4';
