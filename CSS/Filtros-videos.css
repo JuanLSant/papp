@@ -1,0 +1,248 @@
+/* ── ESTILOS GENERALES Y BASE (Actualizados) ── */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0 auto;
+    max-width: 440px;
+    width: 100%;
+    padding: 1rem;
+    background-image: url('../assets/9ab2870916c33f4f8343b432862907f1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+    min-height: 100dvh;
+}
+
+header {
+    height: 50px;
+    background-color: #1e1e1e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #333;
+    border-radius: 10px;
+}
+
+/* ── CONTENEDOR PRINCIPAL DE LA PÁGINA (Actualizados) ── */
+.content-estadisticas {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+}
+
+.content-estadisticas::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content-estadisticas::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content-estadisticas::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 120, 0.45);
+    border-radius: 10px;
+}
+
+.content-estadisticas::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 140, 0.75);
+}
+
+.container-0-estadisticas {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: start;
+    margin-top: 35px;
+    gap: 12px;
+}
+
+/* ── PREVIEW DEL VIDEO Y CONTROLES OVERLAY (Exclusivos de Filtros) ── */
+.container-filtro-preview {
+    position: relative;
+    display: inline-block;
+    width: 345px;
+    min-height: 300px;
+    max-height: 400px;
+    background: rgba(7, 39, 21, 0.829);
+    backdrop-filter: blur(12px);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 35px;
+    gap: 20px;
+}
+
+.container-filtro-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#canvas-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+#canvas-exportar {
+    display: none;
+}
+
+/* ── SECCIÓN DE BOTONES DE FILTROS (Exclusivos de Filtros) ── */
+.filtros-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-filtro {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-filtro:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.btn-filtro.activo {
+    outline: 3px solid #4ade80;
+    outline-offset: 2px;
+}
+
+.btn-original {
+    background: #1a1a2e;
+    color: #4ade80;
+    font-family: monospace;
+}
+
+.btn-ascii {
+    background: #0d0d0d;
+    color: #4ade80;
+    font-family: monospace;
+}
+
+.btn-crt {
+    background: #0d0d0d;
+    color: #4ade80;
+}
+
+.btn-pixel {
+    background: #0d0d0d;
+    color: #4ade80;
+}
+
+/* ── ACCIONES DE GUARDAR Y GRABAR (Exclusivos de Filtros) ── */
+.btn-guardar {
+    display: block;
+    margin: 14px auto 0;
+    padding: 10px 28px;
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-guardar:hover {
+    background: #388e3c;
+    transform: scale(1.03);
+}
+
+.btn-guardar:active {
+    transform: scale(0.97);
+}
+
+/* ── MENÚ DE NAVEGACIÓN COMPACTO / FOOTER (Actualizados) ── */
+.menu-compact {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 20px;
+    height: 90px;
+    background: rgba(9, 49, 27, 0.55);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(0, 255, 100, 0.15);
+    z-index: 10;
+}
+
+.container-2-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.boton {
+    margin-top: 0;
+    width: 54px;
+    height: 54px;
+    flex-shrink: 1;
+    min-width: 0;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(6px);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.25s;
+}
+
+.boton img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.boton:hover {
+    border-color: rgba(34, 197, 94, 0.6);
+    background: rgba(34, 197, 94, 0.06);
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.18);
+}
+
+.boton:active {
+    transform: scale(0.95);
+}
+
+.boton::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #4ade80;
+    opacity: 0.6;
+}

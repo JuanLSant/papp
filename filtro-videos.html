@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/Filtros-videos.css">
+    <title>Video filtros</title>
+</head>
+
+<body>
+    <header>🎬 Filtros de video</header>
+
+    <main class="content-estadisticas">
+        <div class="container-0-estadisticas">
+
+            <div class="container-filtro-preview" style="position:relative;">
+                <video id="video-fuente" crossorigin="anonymous" style="display:none;" playsinline></video>
+
+                <canvas id="canvas-overlay" style="display:block;width:100%;height:100%;"></canvas>
+
+                <div id="ctrl-bar" style="
+                    position:absolute;bottom:0;left:0;right:0;
+                    background:rgba(0,0,0,0.55);
+                    display:flex;align-items:center;gap:8px;padding:6px 10px;
+                ">
+                    <button id="btn-play" onclick="togglePlay()"
+                        style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;">▶</button>
+                    <input id="barra-progreso" type="range" value="0" min="0" step="0.01" style="flex:1;"
+                        oninput="buscarTiempo(this.value)">
+                    <span id="tiempo-txt" style="color:#fff;font-size:11px;white-space:nowrap;">0:00</span>
+                </div>
+
+                <div id="overlay-grabando" style="
+                    display:none;
+                    position:absolute;top:0;left:0;right:0;bottom:0;
+                    background:rgba(0,0,0,0.65);
+                    flex-direction:column;
+                    align-items:center;justify-content:center;
+                    gap:12px;z-index:10;
+                ">
+                    <svg width="52" height="52" viewBox="0 0 52 52">
+                        <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="5" />
+                        <circle cx="26" cy="26" r="22" fill="none" stroke="#e53935" stroke-width="5"
+                            stroke-dasharray="138" stroke-dashoffset="138" stroke-linecap="round" id="circulo-progreso"
+                            style="transform-origin:center;transform:rotate(-90deg);
+                            transition:stroke-dashoffset 0.4s linear;" />
+                    </svg>
+                    <span style="color:#fff;font-size:13px;font-weight:500;letter-spacing:0.04em;">Convirtiendo…</span>
+                    <span id="txt-pct" style="color:rgba(255,255,255,0.6);font-size:11px;">0%</span>
+                </div>
+            </div>
+
+            <div class="filtros-container">
+                <button class="btn-filtro btn-original" onclick="aplicarFiltro('original', this)"> Original</button>
+                <button class="btn-filtro btn-ascii" onclick="aplicarFiltro('ascii',    this)"> ASCII</button>
+                <button class="btn-filtro btn-crt" onclick="aplicarFiltro('crt',      this)"> CRT</button>
+                <button class="btn-filtro btn-pixel" onclick="aplicarFiltro('pixel',    this)"> Pixel</button>
+            </div>
+
+            <button class="btn-guardar" onclick="guardarFrame()">Guardar frame</button>
+            <button class="btn-guardar" id="btn-grabar" onclick="toggleGrabar()"
+                style="background:#e53935;margin-top:8px;">⏺ Grabar video con filtro</button>
+            <p id="txt-grabando" style="color:#e53935;font-size:12px;text-align:center;display:none;">
+                ● Grabando…
+            </p>
+
+            <canvas id="canvas-exportar" style="display:none;"></canvas>
+        </div>
+    </main>
+
+    <footer class="menu-compact">
+        <a href="index.html" class="home-2-link">
+            <div class="boton"><img src="assets/ini.jpg"></div>
+        </a>
+        <a href="tarjetas.html" class="container-2-link">
+            <div class="boton"><img src="assets/filtro.jpg"></div>
+        </a>
+        <a href="quiz.html" class="container-2-link">
+            <div class="boton"><img src="assets/quiz.jpg"></div>
+        </a>
+        <a href="archivos.html" class="container-2-link">
+            <div class="boton"><img src="assets/archivo.jpg"></div>
+        </a>
+    </footer>
+
+    <script>
+        // ── IndexedDB helper ─────────────────────────────────────────────────────────
+        const DB_NAME = 'videosDB';
+        const DB_VERSION = 1;
+        const STORE = 'videos';
+
+        function abrirDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onupgradeneeded = e => {
+                    e.target.result.createObjectStore(STORE);
+                };
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = e => reject(e.target.error);
+            });
+        }
+
+        async function leerBlob(key) {
+            const db = await abrirDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE, 'readonly');
+                const req = tx.objectStore(STORE).get(key);
+                req.onsuccess = e => resolve(e.target.result ?? null);
+                req.onerror = e => reject(e.target.error);
+            });
+        }
+
+        // ── Setup ────────────────────────────────────────────────────────────────────
+        const params = new URLSearchParams(window.location.search);
+        const videoSrc = params.get('video');
+        const slotKey = params.get('slot');
+        const video = document.getElementById('video-fuente');
+        const overlay = document.getElementById('canvas-overlay');
+        const ctx = overlay.getContext('2d');
+        const barraProg = document.getElementById('barra-progreso');
+        const tiempoTxt = document.getElementById('tiempo-txt');
+        const btnPlay = document.getElementById('btn-play');
+
+        let filtroActual = '';
+        let rafId = null;
+        let mediaRecorder = null;
+        let chunksGrabados = [];
+        let grabando = false;
+
+        // ── Carga del video ──────────────────────────────────────────────────────────
+        (async () => {
+            if (slotKey) {
+                try {
+                    const blob = await leerBlob('video_blob_' + slotKey);
+                    if (blob) {
+                        video.src = URL.createObjectURL(blob);
+                        video.load();
+                    } else {
+                        alert('Video no encontrado. Vuelve y selecciónalo de nuevo.');
+                    }
+                } catch (err) {
+                    console.error('Error leyendo IndexedDB:', err);
+                    alert('Error al cargar el video: ' + err.message);
+                }
+            } else if (videoSrc) {
+                video.removeAttribute('crossorigin');
+
+                video.src = videoSrc;
+                video.load();
+
+
+                video.addEventListener('loadeddata', () => {
+                    dibujarFrameActual();
+                });
+            }
+        })();
+
+        video.addEventListener('loadedmetadata', () => {
+            overlay.width = video.videoWidth || 345;
+            overlay.height = video.videoHeight || 300;
+            barraProg.max = video.duration;
+            dibujarFrameActual();
+        });
+
+        video.addEventListener('timeupdate', () => {
+            barraProg.value = video.currentTime;
+            const m = Math.floor(video.currentTime / 60);
+            const s = Math.floor(video.currentTime % 60).toString().padStart(2, '0');
+            tiempoTxt.textContent = `${m}:${s}`;
+        });
+
+        video.addEventListener('ended', () => {
+            btnPlay.textContent = '▶';
+            cancelarLoop();
+            if (grabando) detenerGrabacion(false);
+        });
+
+        // ── Grabación ────────────────────────────────────────────────────────────────
+        function toggleGrabar() {
+            if (!grabando) iniciarGrabacion();
+            else detenerGrabacion(true);
+        }
+
+        function iniciarGrabacion() {
+            if (!filtroActual || filtroActual === 'original') {
+                alert('Selecciona un filtro antes de grabar.'); return;
+            }
+            cancelarLoop();
+            video.pause();
+            video.currentTime = 0;
+            chunksGrabados = [];
+
+            const canvasStream = overlay.captureStream(30);
+
+            try {
+                const audioCtx = new AudioContext();
+                const fuente = audioCtx.createMediaElementSource(video);
+                const dest = audioCtx.createMediaStreamDestination();
+                fuente.connect(dest);
+                fuente.connect(audioCtx.destination);
+                dest.stream.getAudioTracks().forEach(t => canvasStream.addTrack(t));
+            } catch (e) {
+                console.warn('No se pudo capturar audio:', e);
+            }
+
+            const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+                ? 'video/webm;codecs=vp9,opus'
+                : MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')
+                    ? 'video/webm;codecs=vp8,opus'
+                    : 'video/webm';
+
+            mediaRecorder = new MediaRecorder(canvasStream, { mimeType });
+            mediaRecorder.ondataavailable = e => {
+                if (e.data && e.data.size > 0) chunksGrabados.push(e.data);
+            };
+            mediaRecorder.onstop = exportarVideo;
+            mediaRecorder.start(200);
+
+            grabando = true;
+            bloquearControles(true);
+            video.play();
+            btnPlay.textContent = '⏸';
+            iniciarLoop();
+        }
+
+        function detenerGrabacion(manual = false) {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+            grabando = false;
+            cancelarLoop();
+            video.pause();
+            btnPlay.textContent = '▶';
+            bloquearControles(false);
+            if (!manual) mostrarOverlay(false);
+        }
+
+        function bloquearControles(bloquear) {
+            btnPlay.disabled = bloquear;
+            barraProg.disabled = bloquear;
+            btnPlay.style.opacity = bloquear ? '0.3' : '1';
+            barraProg.style.opacity = bloquear ? '0.3' : '1';
+            document.getElementById('btn-grabar').textContent = bloquear
+                ? '⏹ Detener grabación' : '⏺ Grabar video con filtro';
+            document.getElementById('txt-grabando').style.display = bloquear ? 'block' : 'none';
+        }
+
+        function mostrarOverlay(visible, pct = 0) {
+            const ov = document.getElementById('overlay-grabando');
+            const cir = document.getElementById('circulo-progreso');
+            const txt = document.getElementById('txt-pct');
+            ov.style.display = visible ? 'flex' : 'none';
+            if (visible) {
+                cir.style.strokeDashoffset = 138 - (138 * pct / 100);
+                txt.textContent = Math.round(pct) + '%';
+            }
+        }
+
+        function exportarVideo() {
+            bloquearControles(false);
+            btnPlay.disabled = true;
+            barraProg.disabled = true;
+            mostrarOverlay(true, 0);
+
+            let pct = 0;
+            const intervalo = setInterval(() => {
+                pct = Math.min(pct + 2, 95);
+                mostrarOverlay(true, pct);
+            }, 80);
+
+            setTimeout(() => {
+                clearInterval(intervalo);
+                mostrarOverlay(true, 100);
+                const blob = new Blob(chunksGrabados, { type: chunksGrabados[0]?.type || 'video/webm' });
+                const nombre = `video_${filtroActual}_${Date.now()}.webm`;
+
+                setTimeout(() => {
+                    mostrarOverlay(false);
+                    btnPlay.disabled = false;
+                    barraProg.disabled = false;
+
+                    if (window.electronAPI?.guardarArchivo) {
+                        blob.arrayBuffer().then(buf =>
+                            window.electronAPI.guardarArchivo(`src/assets/filtros/${nombre}`, buf)
+                        );
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url; a.download = nombre; a.click();
+                    URL.revokeObjectURL(url);
+                }, 400);
+            }, 800);
+        }
+
+        // ── Controles ────────────────────────────────────────────────────────────────
+        function togglePlay() {
+            if (grabando) return;
+            if (video.paused) {
+                video.play();
+                btnPlay.textContent = '⏸';
+                iniciarLoop();
+            } else {
+                video.pause();
+                btnPlay.textContent = '▶';
+                cancelarLoop();
+            }
+        }
+
+        function buscarTiempo(v) {
+            if (grabando) return;
+            video.currentTime = v;
+            dibujarFrameActual();
+        }
+
+        // ── Loop de renderizado ──────────────────────────────────────────────────────
+        function iniciarLoop() {
+            cancelarLoop();
+            function tick() {
+                if (video.paused || video.ended) return;
+                dibujarFrameActual();
+                rafId = requestAnimationFrame(tick);
+            }
+            rafId = requestAnimationFrame(tick);
+        }
+
+        function cancelarLoop() {
+            if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        }
+
+        function dibujarFrameActual() {
+            if (filtroActual && filtroActual !== 'original') dibujarFiltro(filtroActual);
+            else ctx.drawImage(video, 0, 0, overlay.width, overlay.height);
+        }
+
+        // ── Filtros ──────────────────────────────────────────────────────────────────
+        function dibujarASCII() {
+            const chars = ['@', '#', 'M', 'B', '&', '%', 'W', 'X', 'H', 'A', 'O', 'T', 'S', 'I', '+', ';', ':', ',', ' '];
+            const cw = overlay.width, ch = overlay.height;
+            const charSize = 3;
+            const cols = Math.floor(cw / charSize);
+            const rows = Math.floor(ch / charSize);
+            const tmp = document.createElement('canvas');
+            tmp.width = cols; tmp.height = rows;
+            const tctx = tmp.getContext('2d');
+            tctx.drawImage(video, 0, 0, cols, rows);
+            const data = tctx.getImageData(0, 0, cols, rows).data;
+            ctx.clearRect(0, 0, cw, ch);
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch);
+            ctx.font = `bold ${charSize + 1}px monospace`;
+            ctx.textBaseline = 'top';
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    const i = (y * cols + x) * 4;
+                    const bright = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) / 255;
+                    const charIdx = Math.floor((1 - bright) * (chars.length - 1));
+                    const gris = Math.floor(bright * 255);
+                    ctx.fillStyle = `rgb(${gris},${gris},${gris})`;
+                    ctx.fillText(chars[charIdx], x * charSize, y * charSize);
+                }
+            }
+        }
+
+        function dibujarCRT() {
+            const cw = overlay.width, ch = overlay.height;
+            ctx.clearRect(0, 0, cw, ch);
+            ctx.drawImage(video, 0, 0, cw, ch);
+            for (let y = 0; y < ch; y += 3) {
+                ctx.fillStyle = 'rgba(0,0,0,0.35)';
+                ctx.fillRect(0, y, cw, 1);
+            }
+            const tmp = document.createElement('canvas');
+            tmp.width = cw; tmp.height = ch;
+            const tctx = tmp.getContext('2d');
+            tctx.drawImage(video, 0, 0, cw, ch);
+            ctx.save();
+            ctx.globalAlpha = 0.18;
+            ctx.globalCompositeOperation = 'screen';
+            ctx.drawImage(tmp, -2, 0, cw, ch);
+            ctx.drawImage(tmp, 2, 0, cw, ch);
+            ctx.restore();
+            const grad = ctx.createRadialGradient(cw / 2, ch / 2, ch * 0.3, cw / 2, ch / 2, ch * 0.85);
+            grad.addColorStop(0, 'rgba(0,0,0,0)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.75)');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, cw, ch);
+            ctx.fillStyle = 'rgba(0,255,80,0.07)'; ctx.fillRect(0, 0, cw, ch);
+        }
+
+        function dibujarPixel() {
+            const cw = overlay.width, ch = overlay.height;
+            const blockSize = 6;
+            const cols = Math.floor(cw / blockSize);
+            const rows = Math.floor(ch / blockSize);
+            const tmp = document.createElement('canvas');
+            tmp.width = cols; tmp.height = rows;
+            const tctx = tmp.getContext('2d');
+            tctx.drawImage(video, 0, 0, cols, rows);
+            const data = tctx.getImageData(0, 0, cols, rows).data;
+            ctx.clearRect(0, 0, cw, ch);
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch);
+            const radio = (blockSize / 2) - 0.5;
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    const i = (y * cols + x) * 4;
+                    const r = Math.round(data[i] / 32) * 32;
+                    const g = Math.round(data[i + 1] / 32) * 32;
+                    const b = Math.round(data[i + 2] / 32) * 32;
+                    const cx2 = x * blockSize + blockSize / 2;
+                    const cy2 = y * blockSize + blockSize / 2;
+                    ctx.beginPath();
+                    ctx.arc(cx2, cy2, radio, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgb(${r},${g},${b})`;
+                    ctx.fill();
+                }
+            }
+        }
+
+        function dibujarFiltro(tipo) {
+            if (tipo === 'ascii') dibujarASCII();
+            if (tipo === 'crt') dibujarCRT();
+            if (tipo === 'pixel') dibujarPixel();
+        }
+
+        function aplicarFiltro(tipo, btn) {
+            if (grabando) return;
+            if (btn.classList.contains('activo')) {
+                filtroActual = '';
+                btn.classList.remove('activo');
+                dibujarFrameActual();
+                return;
+            }
+            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
+            btn.classList.add('activo');
+            filtroActual = tipo;
+            dibujarFrameActual();
+            if (!video.paused) iniciarLoop();
+        }
+
+        // ── Guardar frame ────────────────────────────────────────────────────────────
+        function guardarFrame() {
+            const exp = document.getElementById('canvas-exportar');
+            exp.width = overlay.width;
+            exp.height = overlay.height;
+            exp.getContext('2d').drawImage(overlay, 0, 0);
+            const nombre = `frame_${filtroActual || 'original'}_${Date.now()}.png`;
+            exp.toBlob(blob => {
+                if (window.electronAPI?.guardarArchivo) {
+                    blob.arrayBuffer().then(buf =>
+                        window.electronAPI.guardarArchivo(`src/assets/filtros/${nombre}`, buf)
+                    );
+                    return;
+                }
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = nombre; a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+    </script>
+</body>
+
+</html>

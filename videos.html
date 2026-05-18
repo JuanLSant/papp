@@ -27,7 +27,7 @@
 
         <div class="container-5-estadisticas">
             <div class="Video-frame-H" style="cursor:pointer;"
-                onclick="window.location.href='filtro-videos.html?video=src/videos/Video-test.mp4'">
+                onclick="window.location.href='filtro-videos.html?video=videos/Video-test.mp4'">
                 <video width="100%" style="pointer-events:none;">
                     <source src="videos/Video-test.mp4" type="video/mp4">
                 </video>
@@ -58,43 +58,64 @@
     </footer>
 
     <script>
+        // ── IndexedDB helper ─────────────────────────────────────────────────────────
+        const DB_NAME = 'videosDB';
+        const DB_VERSION = 1;
+        const STORE = 'videos';
+
+        function abrirDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onupgradeneeded = e => {
+                    e.target.result.createObjectStore(STORE);
+                };
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = e => reject(e.target.error);
+            });
+        }
+
+        async function guardarBlob(key, blob) {
+            const db = await abrirDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE, 'readwrite');
+                tx.objectStore(STORE).put(blob, key);
+                tx.oncomplete = resolve;
+                tx.onerror = e => reject(e.target.error);
+            });
+        }
+
+        // ── Slots ────────────────────────────────────────────────────────────────────
         const slots = ['slot-1', 'slot-2', 'slot-3', 'slot-4'];
         let slotIndex = 0;
 
-        document.getElementById('fileInput').addEventListener('change', function (e) {
+        document.getElementById('fileInput').addEventListener('change', async function (e) {
             const files = Array.from(e.target.files);
-            files.forEach(file => {
+            for (const file of files) {
                 if (slotIndex >= slots.length) slotIndex = 0;
                 const slotId = slots[slotIndex];
+
+                // Guarda el Blob real en IndexedDB (soporta videos grandes)
+                try {
+                    await guardarBlob('video_blob_' + slotId, file);
+                } catch (err) {
+                    console.error('No se pudo guardar el video en IndexedDB:', err);
+                    alert('Error al guardar el video: ' + err.message);
+                    slotIndex++;
+                    continue;
+                }
+
                 const blobUrl = URL.createObjectURL(file);
                 const slot = document.getElementById(slotId);
-
-                // Guarda el dataURL en localStorage
-                const reader = new FileReader();
-                reader.onload = function (ev) {
-                    try {
-                        localStorage.setItem('video_blob_' + slotId, ev.target.result);
-                    } catch (e) {
-                        console.warn('Video muy grande para localStorage:', e);
-                        try {
-                            sessionStorage.setItem('video_blob_' + slotId, ev.target.result);
-                        } catch (e2) {
-                            console.error('No se pudo guardar el video:', e2);
-                        }
-                    }
-                };
-                reader.readAsDataURL(file);
-
                 slot.style.cursor = 'pointer';
                 slot.onclick = () => abrirConFiltro(slotId);
                 slot.innerHTML = `
-            <video width="100%" style="pointer-events:none;" autoplay muted loop>
-              <source src="${blobUrl}" type="video/mp4">
-            </video>
-            <p style="color:#aaa;text-align:center;font-size:12px;margin:4px 0;">${file.name}</p>
-          `;
+                    <video width="100%" style="pointer-events:none;" autoplay muted loop>
+                        <source src="${blobUrl}" type="video/mp4">
+                    </video>
+                    <p style="color:#aaa;text-align:center;font-size:12px;margin:4px 0;">${file.name}</p>
+                `;
                 slotIndex++;
-            });
+            }
             this.value = '';
         });
 
