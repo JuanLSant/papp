@@ -7,6 +7,56 @@
     <link rel="stylesheet" href="CSS/camera.css">
     <title>Camera</title>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+    <style>
+        /* Preview de tarjeta al escanear QR */
+        #preview-tarjeta {
+            display: none;
+            width: 120px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+            margin: 8px auto 0;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        #preview-tarjeta.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Estado del botón Guardar */
+        .boton-guardar-carta.activo {
+            background: #22c55e;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .boton-guardar-carta.ya-guardada {
+            background: #64748b;
+            color: #fff;
+            cursor: default;
+        }
+
+        @keyframes flash-verde {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+                background: #16a34a;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .boton-guardar-carta.guardado-flash {
+            animation: flash-verde 0.6s ease;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,16 +69,18 @@
             <div class="data-card-top">
                 <label class="switch-container">
                     <input type="checkbox" class="switch-input" id="modoSwitch" />
-
                 </label>
 
                 <div class="Info-data">
                     <h3 id="mensaje">Cargando cámara...</h3>
                 </div>
             </div>
+
+            <!-- Preview de la tarjeta detectada -->
+            <img id="preview-tarjeta" src="" alt="Tarjeta detectada">
+
             <div class="boton-guardar-carta">Guardar</div>
-            </a>
-            <a href="Ar-1.html" class="boton-ar"> AR</a>
+            <a href="Ar-1.html" class="boton-ar">AR</a>
         </div>
     </main>
 
@@ -52,6 +104,9 @@
             </div>
         </a>
     </footer>
+
+    <!-- tarjetas.js primero (expone las funciones), luego capture.js -->
+    <script src="tarjetas.js"></script>
     <script async src="capture.js"></script>
 </body>
 

@@ -7,56 +7,110 @@
     <link rel="stylesheet" href="CSS/tarjetas.css">
     <link rel="stylesheet" href="CSS/Carta.css">
     <title>tarjetas</title>
+
+    <style>
+        /* Tarjeta bloqueada */
+        .card.bloqueada img {
+            filter: grayscale(1) brightness(0.35);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .card.bloqueada::after {
+            content: "🔒";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            pointer-events: none;
+        }
+
+        .card {
+            position: relative;
+            /* necesario para el ::after del candado */
+        }
+
+        /* Animación de entrada para tarjetas desbloqueadas */
+        @keyframes revealCard {
+            from {
+                opacity: 0;
+                transform: scale(0.85) rotateY(30deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        .card.desbloqueada {
+            animation: revealCard 0.45s ease both;
+        }
+
+        /* Contador en la parte superior */
+        .coleccion-header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 8px 0 4px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            letter-spacing: 0.05em;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Contenedor principal con scroll -->
     <main class="content-estadisticas">
-        <div class="card">
-            <img src="tarjetas/ALEMANIA.png" alt="hover">
+
+        <!-- Contador dinámico -->
+        <p class="coleccion-header" id="contador-coleccion"></p>
+
+        <div class="card" data-codigo="WC26_001">
+            <img src="tarjetas/ALEMANIA.png" alt="Alemania">
         </div>
-        <div class="card">
-            <img src="tarjetas/ARGENTINA.png" alt="hover">
+        <div class="card" data-codigo="WC26_002">
+            <img src="tarjetas/ARGENTINA.png" alt="Argentina">
         </div>
-        <div class="card">
-            <img src="tarjetas/BRASIL.png" alt="hover">
+        <div class="card" data-codigo="WC26_003">
+            <img src="tarjetas/BRASIL.png" alt="Brasil">
         </div>
-        <div class="card">
-            <img src="tarjetas/CANADA.png" alt="hover">
+        <div class="card" data-codigo="WC26_004">
+            <img src="tarjetas/CANADA.png" alt="Canadá">
         </div>
-        <div class="card">
-            <img src="tarjetas/COREA.png" alt="hover">
+        <div class="card" data-codigo="WC26_005">
+            <img src="tarjetas/COREA.png" alt="Corea">
         </div>
-        <div class="card">
-            <img src="tarjetas/COURTOIS.png" alt="hover">
+        <div class="card" data-codigo="WC26_006">
+            <img src="tarjetas/COURTOIS.png" alt="Courtois">
         </div>
-        <div class="card">
-            <img src="tarjetas/ESTADOS UNIDOS.png" alt="hover">
+        <div class="card" data-codigo="WC26_007">
+            <img src="tarjetas/ESTADOS UNIDOS.png" alt="Estados Unidos">
         </div>
-        <div class="card">
-            <img src="tarjetas/FRACNIA.png" alt="hover">
+        <div class="card" data-codigo="WC26_008">
+            <img src="tarjetas/FRACNIA.png" alt="Francia">
         </div>
-        <div class="card">
-            <img src="tarjetas/HEUNG-MIN.png" alt="hover">
+        <div class="card" data-codigo="WC26_009">
+            <img src="tarjetas/HEUNG-MIN.png" alt="Heung-Min">
         </div>
-        <div class="card">
-            <img src="tarjetas/JAPON.png" alt="hover">
+        <div class="card" data-codigo="WC26_010">
+            <img src="tarjetas/JAPON.png" alt="Japón">
         </div>
-        <div class="card">
-            <img src="tarjetas/LAINEZ.png" alt="hover">
+        <div class="card" data-codigo="WC26_011">
+            <img src="tarjetas/LAINEZ.png" alt="Lainez">
         </div>
-        <div class="card">
-            <img src="tarjetas/MBAPPÉ.png" alt="hover">
+        <div class="card" data-codigo="WC26_012">
+            <img src="tarjetas/MBAPPÉ.png" alt="Mbappé">
         </div>
-        <div class="card">
-            <img src="tarjetas/MESSI.png" alt="hover">
+        <div class="card" data-codigo="WC26_013">
+            <img src="tarjetas/MESSI.png" alt="Messi">
         </div>
-        <div class="card">
-            <img src="tarjetas/MEXICO.png" alt="hover">
+        <div class="card" data-codigo="WC26_014">
+            <img src="tarjetas/MEXICO.png" alt="México">
         </div>
-        <div class="card">
-            <img src="tarjetas/PORTUGAL.png" alt="hover">
+        <div class="card" data-codigo="WC26_015">
+            <img src="tarjetas/PORTUGAL.png" alt="Portugal">
         </div>
 
     </main>
@@ -81,6 +135,29 @@
             </div>
         </a>
     </footer>
+
+    <script src="tarjetas.js"></script>
+    <script>
+        // Aplica estado bloqueado/desbloqueado a cada card
+        const cards = document.querySelectorAll(".card[data-codigo]");
+        const estado = getEstado();
+        let desbloqueadas = 0;
+
+        cards.forEach((card, i) => {
+            const codigo = card.dataset.codigo;
+            if (estado[codigo]) {
+                card.classList.add("desbloqueada");
+                // Escalonar animación de entrada
+                card.style.animationDelay = `${i * 40}ms`;
+                desbloqueadas++;
+            } else {
+                card.classList.add("bloqueada");
+            }
+        });
+
+        document.getElementById("contador-coleccion").textContent =
+            `Colección: ${desbloqueadas} / ${cards.length}`;
+    </script>
 </body>
 
 </html>
