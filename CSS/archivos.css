@@ -1,0 +1,156 @@
+/* --- Estilos Generales y Base (Reemplazados con los de galería) --- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0 auto;
+    max-width: 440px;
+    width: 100%;
+    padding: 1rem;
+    background-image: url('../assets/9ab2870916c33f4f8343b432862907f1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+    min-height: 100dvh;
+}
+
+header {
+    height: 50px;
+    background-color: #1e1e1e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #333;
+    border-radius: 10px;
+}
+
+/* --- Contenedor Principal y Scroll (Reemplazados con los de galería) --- */
+.content-estadisticas {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+}
+
+.content-estadisticas::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content-estadisticas::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content-estadisticas::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 120, 0.45);
+    border-radius: 10px;
+}
+
+.content-estadisticas::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 140, 0.75);
+}
+
+/* --- Elementos de las Tarjetas/Archivos (Ignorados, se quedan igual) --- */
+.container-4-estadisticas {
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 35px;
+}
+
+.elemento-4-estadisticas {
+    width: 378px;
+    height: 203px;
+    background: rgba(7, 39, 21, 0.829);
+    backdrop-filter: blur(12px);
+    border-radius: 10px;
+}
+
+/* --- Menú Inferior (Reemplazados con los de galería) --- */
+.menu-compact {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 20px;
+    height: 90px;
+    background: rgba(9, 49, 27, 0.55);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(0, 255, 100, 0.15);
+    z-index: 10;
+}
+
+.container-2-link,
+.home-2-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* --- Botones del Menú con Efectos (Reemplazados con los de galería) --- */
+.boton {
+    margin-top: 0;
+    width: 54px;
+    height: 54px;
+    flex-shrink: 1;
+    min-width: 0;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(6px);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.25s;
+}
+
+.boton img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.boton:hover {
+    border-color: rgba(34, 197, 94, 0.6);
+    background: rgba(34, 197, 94, 0.06);
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.18);
+}
+
+.boton:active {
+    transform: scale(0.95);
+}
+
+.boton::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #4ade80;
+    opacity: 0.6;
+}
+
+.video-iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    display: block;
+}
