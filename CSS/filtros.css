@@ -35,7 +35,7 @@ header {
     border-radius: 10px;
 }
 
-/* ── CONTENIDO PRINCIPAL Y SCROLLBAR ── */
+
 .content-estadisticas {
     flex: 1;
     overflow-y: auto;
@@ -59,7 +59,7 @@ header {
     background: rgba(0, 255, 140, 0.75);
 }
 
-/* ── ZONA DE CARGA DE ARCHIVOS (UPLOAD) ── */
+
 .upload-area {
     margin-bottom: 14px;
 }
@@ -85,7 +85,7 @@ header {
     color: #eee;
 }
 
-/* ── REJILLA Y CONTENEDORES DE VIDEO ── */
+
 .container-5-estadisticas {
     display: flex;
     flex-direction: row;
@@ -107,7 +107,7 @@ header {
     margin-bottom: 30px;
 }
 
-/* ── MENÚ DE NAVEGACIÓN COMPACTO (FOOTER) ── */
+
 .menu-compact {
     position: sticky;
     bottom: 0;
@@ -133,7 +133,7 @@ header {
     cursor: pointer;
 }
 
-/* Redirección específica para el botón de home */
+
 .home-2-link {
     display: block;
     text-decoration: none;
@@ -141,7 +141,7 @@ header {
     cursor: pointer;
 }
 
-/* Botones del menú inferior */
+
 .boton {
     margin-bottom: 25px;
     font-family: 'Bebas Neue', sans-serif;
@@ -175,7 +175,7 @@ header {
     border-radius: inherit;
 }
 
-/* Punto verde decorativo */
+
 .boton::after {
     content: '';
     position: absolute;
@@ -252,7 +252,7 @@ header {
     transform: scale(0.97);
 }
 
-/* ── Botón guardar ── */
+
 .btn-guardar {
     display: block;
     width: 100%;

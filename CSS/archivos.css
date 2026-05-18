@@ -1,4 +1,3 @@
-/* --- Estilos Generales y Base (Reemplazados con los de galería) --- */
 * {
     box-sizing: border-box;
 }
@@ -35,7 +34,7 @@ header {
     border-radius: 10px;
 }
 
-/* --- Contenedor Principal y Scroll (Reemplazados con los de galería) --- */
+
 .content-estadisticas {
     flex: 1;
     overflow-y: auto;
@@ -59,7 +58,7 @@ header {
     background: rgba(0, 255, 140, 0.75);
 }
 
-/* --- Elementos de las Tarjetas/Archivos (Ignorados, se quedan igual) --- */
+
 .container-4-estadisticas {
     display: flex;
     gap: 20px;
@@ -76,7 +75,7 @@ header {
     border-radius: 10px;
 }
 
-/* --- Menú Inferior (Reemplazados con los de galería) --- */
+
 .menu-compact {
     position: sticky;
     bottom: 0;
@@ -103,7 +102,7 @@ header {
     cursor: pointer;
 }
 
-/* --- Botones del Menú con Efectos (Reemplazados con los de galería) --- */
+
 .boton {
     margin-top: 0;
     width: 54px;

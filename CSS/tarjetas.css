@@ -58,123 +58,6 @@ header {
     background: rgba(0, 255, 140, 0.75);
 }
 
-.container-0-estadisticas {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    align-content: start;
-    margin-top: 35px;
-    gap: 12px;
-}
-
-
-.container-filtro-preview {
-    position: relative;
-    display: inline-block;
-    width: 345px;
-    min-height: 300px;
-    max-height: 400px;
-    background: rgba(7, 39, 21, 0.829);
-    backdrop-filter: blur(12px);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 35px;
-    gap: 20px;
-}
-
-.container-filtro-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-#canvas-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-}
-
-#canvas-exportar {
-    display: none;
-}
-
-
-.filtros-container {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 16px;
-    flex-wrap: wrap;
-}
-
-.btn-filtro {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.btn-filtro:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
-}
-
-.btn-filtro.activo {
-    outline: 3px solid #4ade80;
-    outline-offset: 2px;
-}
-
-.btn-original {
-    background: #1a1a2e;
-    color: #4ade80;
-    font-family: monospace;
-}
-
-.btn-ascii {
-    background: #0d0d0d;
-    color: #4ade80;
-    font-family: monospace;
-}
-
-.btn-crt {
-    background: #0d0d0d;
-    color: #4ade80;
-}
-
-.btn-pixel {
-    background: #0d0d0d;
-    color: #4ade80;
-}
-
-
-.btn-guardar {
-    display: block;
-    margin: 14px auto 0;
-    padding: 10px 28px;
-    background: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 700;
-    transition: background 0.2s ease, transform 0.15s ease;
-}
-
-.btn-guardar:hover {
-    background: #388e3c;
-    transform: scale(1.03);
-}
-
-.btn-guardar:active {
-    transform: scale(0.97);
-}
 
 
 .menu-compact {
@@ -195,7 +78,8 @@ header {
     z-index: 10;
 }
 
-.container-2-link {
+.container-2-link,
+.home-2-link {
     display: block;
     text-decoration: none;
     color: inherit;

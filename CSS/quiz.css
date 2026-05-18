@@ -202,7 +202,6 @@ header {
 .boton {
     margin-top: 0;
     margin-bottom: 25px;
-    /* Mantiene la separación inferior previa si se requiere mantener el flujo */
     width: 54px;
     height: 54px;
     flex-shrink: 1;
