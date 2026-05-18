@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
     <style>
-        /* Preview de tarjeta al escanear QR */
         #preview-tarjeta {
             display: none;
             width: 120px;
@@ -25,7 +24,7 @@
             opacity: 1;
         }
 
-        /* Estado del botón Guardar */
+
         .boton-guardar-carta.activo {
             background: #22c55e;
             color: #fff;
@@ -76,7 +75,7 @@
                 </div>
             </div>
 
-            <!-- Preview de la tarjeta detectada -->
+
             <img id="preview-tarjeta" src="" alt="Tarjeta detectada">
 
             <div class="boton-guardar-carta">Guardar</div>
@@ -105,7 +104,7 @@
         </a>
     </footer>
 
-    <!-- tarjetas.js primero (expone las funciones), luego capture.js -->
+
     <script src="tarjetas.js"></script>
     <script async src="capture.js"></script>
 </body>

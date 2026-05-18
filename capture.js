@@ -1,8 +1,3 @@
-/**
- * capture.js
- * Lector de QR + lógica del botón Guardar.
- * Depende de tarjetas.js (debe cargarse antes).
- */
 
 const canvasElement = document.getElementById("Cam");
 const canvas = canvasElement.getContext("2d");
@@ -13,9 +8,8 @@ const botonGuardar = document.querySelector(".boton-guardar-carta");
 const video = document.createElement("video");
 video.setAttribute("playsinline", true);
 let scanning = false;
-let codigoActual = null; // último código QR detectado
+let codigoActual = null;
 
-/* ── Preview de imagen al escanear ─────────────────────────── */
 const previewImg = document.getElementById("preview-tarjeta");
 
 function mostrarPreview(codigo) {
@@ -33,7 +27,6 @@ function ocultarPreview() {
     previewImg.src = "";
 }
 
-/* ── Estado del botón Guardar ───────────────────────────────── */
 function actualizarBoton() {
     if (!codigoActual || !esCodigoValido(codigoActual)) {
         botonGuardar.classList.remove("activo", "ya-guardada");
@@ -70,7 +63,6 @@ botonGuardar.addEventListener("click", () => {
     }
 });
 
-/* ── Escáner QR ─────────────────────────────────────────────── */
 function dibujarFrame() {
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
         canvasElement.height = video.videoHeight;
@@ -108,7 +100,6 @@ function dibujarFrame() {
 }
 
 function iniciarCamara() {
-    // Resetear estado visual al cambiar cámara
     codigoActual = null;
     ocultarPreview();
     actualizarBoton();
