@@ -41,7 +41,7 @@ function actualizarBoton() {
     } else {
         botonGuardar.classList.add("activo");
         botonGuardar.classList.remove("ya-guardada");
-        botonGuardar.textContent = "💾 Guardar tarjeta";
+        botonGuardar.textContent = "Guardar tarjeta";
     }
 }
 
