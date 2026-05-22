@@ -55,7 +55,7 @@ botonGuardar.addEventListener("click", () => {
     actualizarBoton();
 
     if (nueva) {
-        mensaje.textContent = `¡Tarjeta desbloqueada! 🎉`;
+        mensaje.textContent = `¡Tarjeta desbloqueada!`;
         botonGuardar.classList.add("guardado-flash");
         setTimeout(() => botonGuardar.classList.remove("guardado-flash"), 600);
     } else {
